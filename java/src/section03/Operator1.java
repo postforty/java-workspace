@@ -35,7 +35,7 @@ public class Operator1 {
         System.out.println(5 % 2 == 0); // false
 
         // 비교
-        
+
         // 논리
 
         // 3. 삼항
