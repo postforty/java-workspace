@@ -15,6 +15,7 @@ public class Operator1 {
         System.out.println(--n1); // 2
         System.out.println(n1--); // 2
         System.out.println(n1); // 1
+        
         //  3) 논리 부정(뒤집기) : !
         System.out.println(true); // true
         System.out.println(!true); // false
