@@ -9,3 +9,6 @@
 4. project name 입력
 
 ## 수업 자료
+|Section|Content|
+|-------|-------|
+|1|오리엔테이션|
