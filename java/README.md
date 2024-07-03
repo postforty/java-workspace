@@ -9,6 +9,6 @@
 4. project name 입력
 
 ## 수업 자료
-|Section|Content|
-|-------|-------|
-|1|오리엔테이션|
+|Section|Title|Content|
+|-------|-----|-------|
+|1|오리엔테이션|[열기](https://www.notion.so/1-b7804cf77ba84e3cb6c3377d9711b476?pvs=4)|
