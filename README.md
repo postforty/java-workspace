@@ -1,4 +1,5 @@
-<img src="./java/java-logo.png" width="50"/>
+<img src="./java/java-logo.png" width="70"/>
+
 # 웹개발 - 자바
 ## 📒 마크다운 기본 사용법
 + https://www.markdownguide.org/basic-syntax/
