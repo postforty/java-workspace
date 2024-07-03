@@ -1,4 +1,4 @@
-<img src="./java/java-logo.png" width="100"/>
+<img src="./java/java-logo.png" width="150"/>
 
 # 웹개발 - 자바
 ## 📒 마크다운 기본 사용법
