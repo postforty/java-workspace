@@ -1,5 +1,6 @@
+![ex_screenshot](./java/java-logo.png)
 # 웹개발 - 자바
-## ⚙️ 마크다운 기본 사용법
+## 📒 마크다운 기본 사용법
 + https://www.markdownguide.org/basic-syntax/
 
 ## 💻 자바 프로젝트 생성 방법
