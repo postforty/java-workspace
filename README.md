@@ -1,6 +1,4 @@
-<img src="./java/java-logo.png" width="20" height="20"/>
-
-# 웹개발 - 자바
+# 웹개발 - 자바<img src="./java/java-logo.png" width="50" height="50"/>
 ## 📒 마크다운 기본 사용법
 + https://www.markdownguide.org/basic-syntax/
 
