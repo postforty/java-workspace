@@ -17,6 +17,5 @@ public class Ex0307 {
         System.out.println("false ^ true\t: " + (false ^ true));
         System.out.println("true ^ false\t: " + (true ^ false));
         System.out.println("false ^ false\t: " + (false ^ false));
-
     }
 }
