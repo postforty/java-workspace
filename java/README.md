@@ -12,6 +12,5 @@
 |Section|Title|Content|
 |-------|-----|-------|
 |1|오리엔테이션|[열기](https://treasure-snow-23c.notion.site/1-b7804cf77ba84e3cb6c3377d9711b476?pvs=4){:target="_blank"}|
-|1|오리엔테이션|<a href="[https://www.markdownguide.org](https://treasure-snow-23c.notion.site/1-b7804cf77ba84e3cb6c3377d9711b476?pvs=4)" target="_blank">바로가기</a>|
+|1|오리엔테이션|<a href="https://treasure-snow-23c.notion.site/1-b7804cf77ba84e3cb6c3377d9711b476?pvs=4" target="_blank">바로가기</a>|
 
-<a href="https://www.google.com/" target="_blank">새 탭에서 열기</a>
