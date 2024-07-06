@@ -4,7 +4,7 @@
 ## 📒 마크다운 기본 사용법
 + https://www.markdownguide.org/basic-syntax/
 
-## 💻 자바 프로젝트 생성 방법
+## 💻 자바 프로젝트 생성 방법(VSCode)
 1. 커맨드 팔레트 열기(단축키: ctrl+shift+p)
 2. java: Create Java Project... 선택
 3. No build tools 선택
