@@ -25,11 +25,26 @@ class Dog extends Animal {
     }
 }
 
+class Cat extends Animal {
+
+    Cat(String name) {
+        super(name);
+    }
+
+    void makeSound() {
+        System.out.println(name + " 냐옹");
+    }
+}
+
 public class Ex1101 {
     public static void main(String[] args) {
         // Animal animal = new Animal();
         Dog dog = new Dog("happy");
         dog.makeSound();
         dog.eat();
+
+        Cat cat = new Cat("Coco");
+        cat.makeSound();
+        cat.eat();
     }
 }
