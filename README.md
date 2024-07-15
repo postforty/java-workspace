@@ -22,4 +22,5 @@
 |7|배열|<a href="https://treasure-snow-23c.notion.site/7-a8d7f64677824dc18c5259c130bbd68c?pvs=4" target="_blank">바로가기</a>|
 |8|클래스1|<a href="https://treasure-snow-23c.notion.site/8-1-dcc30be158264ea6bfad2e0ca84ec468?pvs=4" target="_blank">바로가기</a>|
 |9|클래스2|<a href="https://treasure-snow-23c.notion.site/9-2-63d2593df45d4052b2dcb122d50e1e8c?pvs=4" target="_blank">바로가기</a>|
+|10|클래스2|<a href="https://treasure-snow-23c.notion.site/10-3-3a03d6b3e32e45faad8ebf65604f0faf?pvs=4" target="_blank">바로가기</a>|
 |18|자바 입출력(I/O)|<a href="https://treasure-snow-23c.notion.site/18-I-O-6fc6dd52e1c040498ee2f0fc291c30ac?pvs=4" target="_blank">바로가기</a>|
