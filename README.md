@@ -25,5 +25,5 @@
 |10|클래스2|<a href="https://treasure-snow-23c.notion.site/10-3-3a03d6b3e32e45faad8ebf65604f0faf?pvs=4" target="_blank">바로가기</a>|
 |11|추상 클래스와 인터페이스|<a href="https://treasure-snow-23c.notion.site/11-68e918fbfa6745f59c28c2481d165d9d?pvs=4" target="_blank">바로가기</a>|
 |12|다형성|<a href="https://treasure-snow-23c.notion.site/12-7e131692fd9c4aacb5c328a6259cb4fb?pvs=4" target="_blank">바로가기</a>|
+|13|내부 클래스, 함수형 인터페이스|<a href="https://treasure-snow-23c.notion.site/13-be47c6441d06493f9be49887f7ce1d64?pvs=4">바로가기</a>|
 |18|자바 입출력(I/O)|<a href="https://treasure-snow-23c.notion.site/18-I-O-6fc6dd52e1c040498ee2f0fc291c30ac?pvs=4" target="_blank">바로가기</a>|
-
