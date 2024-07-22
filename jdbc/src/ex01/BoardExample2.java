@@ -5,6 +5,7 @@ import java.util.Scanner;
 public class BoardExample2 {
     private Scanner scanner = new Scanner(System.in); // 추가
 
+    // 메인 메뉴 선택 기능
     public void list() {
         System.out.println();
         System.out.println("[게시물 목록]");

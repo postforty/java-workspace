@@ -7,6 +7,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Scanner;
 
+// 게시물 목록 기능(JDBC 연동)
 public class BoardExample3 {
     private Scanner scanner = new Scanner(System.in);
     private Connection conn;
