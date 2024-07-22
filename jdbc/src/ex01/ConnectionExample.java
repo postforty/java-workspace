@@ -14,7 +14,7 @@ public class ConnectionExample {
 
             conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/world", "root", "1234");
 
-            String sql = "SELECT * FROM world.city";
+            String sql = "SELECT * FROM city";
 
             PreparedStatement pstmt = conn.prepareStatement(sql);
 
