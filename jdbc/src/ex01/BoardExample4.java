@@ -103,7 +103,7 @@ public class BoardExample4 {
         String menuNo = scanner.nextLine();
         if (menuNo.equals("1")) {
             try {
-                String sql = "INSERT INTO boards (btitle, bcontent, bwriter, bdate) VALUES (?, ?, ?, now())";
+                String sql = "INSERT INTO boards (btitle, bcontent, bwriter, bdate) VALUES (?, ?, ?, now())"; // 물음표(?)는 위치 홀더
                 PreparedStatement pstmt = conn.prepareStatement(sql);
                 pstmt.setString(1, board.getBtitle());
                 pstmt.setString(2, board.getBcontent());

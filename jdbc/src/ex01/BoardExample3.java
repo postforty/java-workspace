@@ -35,8 +35,8 @@ public class BoardExample3 {
         try {
             String sql = "SELECT bno, btitle, bcontent, bwriter, bdate FROM boards ORDER BY bno DESC";
             PreparedStatement pstmt = conn.prepareStatement(sql);
-            ResultSet rs = pstmt.executeQuery();
-            while (rs.next()) {
+            ResultSet rs = pstmt.executeQuery(); // executeQuery() 메서드는 쿼리 실행후 응답값 반환
+            while (rs.next()) { // rs.next()는 결과 집합에서 다음 행으로 이동하고, 결과가 존재하면 true를 반환
                 Board board = new Board();
                 board.setBno(rs.getInt("bno"));
                 board.setBtitle(rs.getString("btitle"));
@@ -49,6 +49,7 @@ public class BoardExample3 {
                         board.getBdate(),
                         board.getBtitle());
             }
+            // 리소스 해제
             rs.close();
             pstmt.close();
         } catch (SQLException e) {
