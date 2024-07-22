@@ -1,5 +1,6 @@
 package ex01;
 
+// 메인 메뉴
 public class BoardExample1 {
     public void list() {
         System.out.println();

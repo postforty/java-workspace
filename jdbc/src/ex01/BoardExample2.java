@@ -67,7 +67,7 @@ public class BoardExample2 {
 
     public void exit() {
         System.out.println("exit() 메서드 실행");
-        System.exit(0);
+        System.exit(0); // 종료 상태 코드(0은 정상 종료, 그외 비정상 종료)
     }
 
     public static void main(String[] args) {

@@ -7,11 +7,11 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Scanner;
 
-public class BoardExample4 {
+public class BoardExample5 {
     private Scanner scanner = new Scanner(System.in);
     private Connection conn;
 
-    public BoardExample4() {
+    public BoardExample5() {
         try {
             Class.forName("com.mysql.cj.jdbc.Driver");
 
@@ -84,7 +84,6 @@ public class BoardExample4 {
         }
     }
 
-    // ! 게시물 생성
     public void create() {
         // 입력 받기
         Board board = new Board();
@@ -118,8 +117,38 @@ public class BoardExample4 {
         list();
     }
 
+    // ! 게시물 읽기
     public void read() {
-        System.out.println("read() 메서드 실행");
+        System.out.println("[게시물 읽기]");
+        System.out.print("bno: ");
+        int bno = Integer.parseInt(scanner.nextLine());
+
+        try {
+            String sql = "SELECT bno, btitle, bcontent, bwriter, bdate FROM boards WHERE bno=?";
+            PreparedStatement pstmt = conn.prepareStatement(sql);
+            pstmt.setInt(1, bno);
+            ResultSet rs = pstmt.executeQuery();
+            if (rs.next()) {
+                Board board = new Board();
+                board.setBno(rs.getInt("bno"));
+                board.setBtitle(rs.getString("btitle"));
+                board.setBcontent(rs.getString("bcontent"));
+                board.setBwriter(rs.getString("bwriter"));
+                board.setBdate(rs.getDate("bdate"));
+                System.out.println("######################################################################");
+                System.out.println("번호: " + board.getBno());
+                System.out.println("번호: " + board.getBtitle());
+                System.out.println("번호: " + board.getBcontent());
+                System.out.println("번호: " + board.getBwriter());
+                System.out.println("번호: " + board.getBdate());
+                System.out.println("######################################################################");
+            }
+            rs.close();
+            pstmt.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+            exit();
+        }
         list();
     }
 
@@ -134,7 +163,7 @@ public class BoardExample4 {
     }
 
     public static void main(String[] args) {
-        BoardExample4 boardExample = new BoardExample4();
+        BoardExample5 boardExample = new BoardExample5();
         boardExample.list();
     }
 }
