@@ -28,4 +28,6 @@
 |13|내부 클래스, 함수형 인터페이스|<a href="https://treasure-snow-23c.notion.site/13-be47c6441d06493f9be49887f7ce1d64?pvs=4">바로가기</a>|
 |14|예외 처리|<a href="https://treasure-snow-23c.notion.site/14-662a59ea19b44b81a5399ea61b39261f?pvs=4">바로가기</a>|
 |15|기본 API 클래스|<a href="https://treasure-snow-23c.notion.site/15-API-88204d5bbf7847afb4427be784c05a14?pvs=4">바로가기</a>|
+|16|컬렉션 프레임워크|<a href="https://treasure-snow-23c.notion.site/16-d55b66ebbe5046afbd06287a67acaac7?pvs=4">바로가기</a>|
+|17|컬렉션 프레임워크|<a href="https://treasure-snow-23c.notion.site/17-647dfee28496417c89bf3cbaabdadcdd?pvs=4">바로가기</a>|
 |18|자바 입출력(I/O)|<a href="https://treasure-snow-23c.notion.site/18-I-O-6fc6dd52e1c040498ee2f0fc291c30ac?pvs=4" target="_blank">바로가기</a>|
