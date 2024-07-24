@@ -31,3 +31,5 @@
 |16|컬렉션 프레임워크|<a href="https://treasure-snow-23c.notion.site/16-d55b66ebbe5046afbd06287a67acaac7?pvs=4">바로가기</a>|
 |17|컬렉션 프레임워크|<a href="https://treasure-snow-23c.notion.site/17-647dfee28496417c89bf3cbaabdadcdd?pvs=4">바로가기</a>|
 |18|자바 입출력(I/O)|<a href="https://treasure-snow-23c.notion.site/18-I-O-6fc6dd52e1c040498ee2f0fc291c30ac?pvs=4" target="_blank">바로가기</a>|
+|19|미니 프로젝트1|<a href="https://treasure-snow-23c.notion.site/19-1-03d3c9fb2b1f4199ad73436e29ff909e?pvs=4" target="_blank">바로가기</a>|
+|20|미니 프로젝트2(JDBC 연동)|<a href="https://treasure-snow-23c.notion.site/19-1-03d3c9fb2b1f4199ad73436e29ff909e?pvs=4" target="_blank">바로가기</a>|
