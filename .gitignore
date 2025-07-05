@@ -2,3 +2,6 @@
 /java/bin
 /jdbc/bin
 jdbc/lib/mysql-connector-j-9.0.0.jar
+java-mento/bin
+*.class
+*.zip

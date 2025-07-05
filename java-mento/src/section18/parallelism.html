@@ -1,0 +1,555 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>동시성 vs 병렬성 시각화</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(45deg, #2196F3, #21CBF3);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+
+        .header p {
+            font-size: 1.2em;
+            opacity: 0.9;
+        }
+
+        .demo-section {
+            padding: 40px;
+        }
+
+        .demo-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 30px;
+            margin-bottom: 50px;
+        }
+
+        .demo-box {
+            background: #f8f9fa;
+            border-radius: 15px;
+            padding: 30px;
+            border: 3px solid #e9ecef;
+            transition: all 0.3s ease;
+        }
+
+        .demo-box:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 30px rgba(0,0,0,0.1);
+        }
+
+        .demo-title {
+            font-size: 1.8em;
+            font-weight: bold;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .single-thread .demo-title {
+            color: #9B59B6;
+        }
+
+        .concurrency .demo-title {
+            color: #FF6B6B;
+        }
+
+        .parallelism .demo-title {
+            color: #4ECDC4;
+        }
+
+        .cpu-container {
+            background: #fff;
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 20px;
+            border: 2px solid #ddd;
+        }
+
+        .cpu-label {
+            font-weight: bold;
+            margin-bottom: 15px;
+            font-size: 1.1em;
+        }
+
+        .core {
+            height: 50px;
+            background: #e9ecef;
+            border-radius: 8px;
+            margin-bottom: 10px;
+            position: relative;
+            overflow: hidden;
+            border: 2px solid #dee2e6;
+        }
+
+        .task {
+            height: 100%;
+            position: absolute;
+            top: 0;
+            border-radius: 6px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            color: white;
+            font-size: 14px;
+            transition: all 0.5s ease;
+        }
+
+        .task-a { background: #FF6B6B; }
+        .task-b { background: #4ECDC4; }
+        .task-c { background: #45B7D1; }
+        .task-d { background: #96CEB4; }
+
+        .controls {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .btn {
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 50px;
+            font-size: 1.1em;
+            font-weight: bold;
+            cursor: pointer;
+            margin: 0 10px;
+            transition: all 0.3s ease;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.3);
+        }
+
+        .btn:active {
+            transform: translateY(0);
+        }
+
+        .explanation {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            color: white;
+            padding: 30px;
+            border-radius: 15px;
+            margin-top: 30px;
+        }
+
+        .explanation h3 {
+            font-size: 1.5em;
+            margin-bottom: 15px;
+        }
+
+        .explanation-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            margin-top: 20px;
+        }
+
+        .explanation-item {
+            background: rgba(255,255,255,0.1);
+            padding: 20px;
+            border-radius: 10px;
+            backdrop-filter: blur(10px);
+        }
+
+        .timeline {
+            background: #fff;
+            border-radius: 10px;
+            padding: 20px;
+            margin-top: 20px;
+            border: 2px solid #ddd;
+        }
+
+        .timeline-label {
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+
+        .timeline-bar {
+            height: 30px;
+            background: #f8f9fa;
+            border-radius: 15px;
+            position: relative;
+            overflow: hidden;
+            border: 1px solid #dee2e6;
+        }
+
+        .timeline-segment {
+            height: 100%;
+            position: absolute;
+            top: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            font-weight: bold;
+            color: white;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.6; }
+        }
+
+        .active {
+            animation: pulse 1s infinite;
+        }
+
+        @media (max-width: 768px) {
+            .demo-container {
+                grid-template-columns: 1fr;
+            }
+            
+            .explanation-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .header h1 {
+                font-size: 2em;
+            }
+        }
+
+        @media (max-width: 1024px) {
+            .demo-container {
+                grid-template-columns: 1fr;
+            }
+            
+            .explanation-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🧵 동시성 vs 병렬성</h1>
+            <p>Java Thread의 핵심 개념을 시각적으로 이해해보세요</p>
+        </div>
+
+        <div class="demo-section">
+            <div class="controls">
+                <button class="btn" onclick="startSingleThread()">싱글 스레드 시뮬레이션</button>
+                <button class="btn" onclick="startConcurrency()">동시성 시뮬레이션</button>
+                <button class="btn" onclick="startParallelism()">병렬성 시뮬레이션</button>
+                <button class="btn" onclick="resetAll()">리셋</button>
+            </div>
+
+            <div class="demo-container">
+                <!-- 싱글 스레드 데모 -->
+                <div class="demo-box single-thread">
+                    <div class="demo-title">🐌 싱글 스레드</div>
+                    <div class="cpu-container">
+                        <div class="cpu-label">💻 Single Thread</div>
+                        <div class="core" id="single-core">
+                            <div class="task task-a" id="single-task-a">Task A</div>
+                            <div class="task task-b" id="single-task-b">Task B</div>
+                            <div class="task task-c" id="single-task-c">Task C</div>
+                        </div>
+                    </div>
+                    <div class="timeline">
+                        <div class="timeline-label">⏱️ 시간 흐름</div>
+                        <div class="timeline-bar" id="single-timeline"></div>
+                    </div>
+                </div>
+
+                <!-- 동시성 데모 -->
+                <div class="demo-box concurrency">
+                    <div class="demo-title">🔄 동시성 (Concurrency)</div>
+                    <div class="cpu-container">
+                        <div class="cpu-label">💻 Multi Thread (Single Core)</div>
+                        <div class="core" id="concurrency-core">
+                            <div class="task task-a" id="conc-task-a">Task A</div>
+                            <div class="task task-b" id="conc-task-b">Task B</div>
+                            <div class="task task-c" id="conc-task-c">Task C</div>
+                        </div>
+                    </div>
+                    <div class="timeline">
+                        <div class="timeline-label">⏱️ 시간 흐름</div>
+                        <div class="timeline-bar" id="concurrency-timeline"></div>
+                    </div>
+                </div>
+
+                <!-- 병렬성 데모 -->
+                <div class="demo-box parallelism">
+                    <div class="demo-title">⚡ 병렬성 (Parallelism)</div>
+                    <div class="cpu-container">
+                        <div class="cpu-label">💻 Multi Thread (Multi Core)</div>
+                        <div class="core" id="parallel-core-1">
+                            <div class="task task-a" id="par-task-a">Task A</div>
+                        </div>
+                        <div class="core" id="parallel-core-2">
+                            <div class="task task-b" id="par-task-b">Task B</div>
+                        </div>
+                        <div class="core" id="parallel-core-3">
+                            <div class="task task-c" id="par-task-c">Task C</div>
+                        </div>
+                    </div>
+                    <div class="timeline">
+                        <div class="timeline-label">⏱️ 시간 흐름</div>
+                        <div class="timeline-bar" id="parallelism-timeline"></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="explanation">
+                <h3>📚 핵심 차이점</h3>
+                <div class="explanation-grid">
+                    <div class="explanation-item">
+                        <h4>🐌 싱글 스레드</h4>
+                        <p><strong>• 한 번에 하나의 작업만</strong> 순차적으로 실행</p>
+                        <p>• 이전 작업이 완료될 때까지 다음 작업 대기</p>
+                        <p>• 가장 단순하지만 느린 실행 방식</p>
+                        <p>• 블로킹 발생 시 전체 프로그램 정지</p>
+                    </div>
+                    <div class="explanation-item">
+                        <h4>🔄 동시성 (Concurrency)</h4>
+                        <p><strong>• 하나의 CPU 코어</strong>에서 여러 작업을 <strong>번갈아가며</strong> 실행</p>
+                        <p>• 시분할(Time Slicing)을 통해 동시에 실행되는 것처럼 보임</p>
+                        <p>• I/O 대기시간을 효율적으로 활용</p>
+                        <p>• 응답성 향상이 주목적</p>
+                    </div>
+                    <div class="explanation-item">
+                        <h4>⚡ 병렬성 (Parallelism)</h4>
+                        <p><strong>• 여러 CPU 코어</strong>에서 작업들이 <strong>실제로 동시에</strong> 실행</p>
+                        <p>• 진짜 동시 실행으로 처리 속도 향상</p>
+                        <p>• CPU 집약적 작업에 효과적</p>
+                        <p>• 성능 향상이 주목적</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let singleInterval;
+        let concurrencyInterval;
+        let parallelismInterval;
+        let singleStep = 0;
+        let concurrencyStep = 0;
+        let parallelismStep = 0;
+
+        function resetAll() {
+            clearInterval(singleInterval);
+            clearInterval(concurrencyInterval);
+            clearInterval(parallelismInterval);
+            
+            // 싱글 스레드 리셋
+            document.getElementById('single-task-a').style.left = '0%';
+            document.getElementById('single-task-b').style.left = '0%';
+            document.getElementById('single-task-c').style.left = '0%';
+            document.getElementById('single-task-a').style.width = '0%';
+            document.getElementById('single-task-b').style.width = '0%';
+            document.getElementById('single-task-c').style.width = '0%';
+            
+            // 동시성 리셋
+            document.getElementById('conc-task-a').style.left = '0%';
+            document.getElementById('conc-task-b').style.left = '0%';
+            document.getElementById('conc-task-c').style.left = '0%';
+            document.getElementById('conc-task-a').style.width = '0%';
+            document.getElementById('conc-task-b').style.width = '0%';
+            document.getElementById('conc-task-c').style.width = '0%';
+            
+            // 병렬성 리셋
+            document.getElementById('par-task-a').style.width = '0%';
+            document.getElementById('par-task-b').style.width = '0%';
+            document.getElementById('par-task-c').style.width = '0%';
+            
+            // 타임라인 리셋
+            document.getElementById('single-timeline').innerHTML = '';
+            document.getElementById('concurrency-timeline').innerHTML = '';
+            document.getElementById('parallelism-timeline').innerHTML = '';
+            
+            // 활성 상태 제거
+            document.querySelectorAll('.active').forEach(el => el.classList.remove('active'));
+            
+            singleStep = 0;
+            concurrencyStep = 0;
+            parallelismStep = 0;
+        }
+
+        function startSingleThread() {
+            resetAll();
+            
+            const tasks = ['single-task-a', 'single-task-b', 'single-task-c'];
+            const colors = ['#FF6B6B', '#4ECDC4', '#45B7D1'];
+            const timeline = document.getElementById('single-timeline');
+            
+            let currentTask = 0;
+            let progress = 0;
+            
+            // 첫 번째 작업 활성화
+            document.getElementById(tasks[currentTask]).classList.add('active');
+            
+            singleInterval = setInterval(() => {
+                progress += 10;
+                document.getElementById(tasks[currentTask]).style.width = `${progress}%`;
+                
+                // 타임라인 업데이트
+                const segment = document.createElement('div');
+                segment.className = 'timeline-segment';
+                segment.style.left = `${singleStep * 5}%`;
+                segment.style.width = '5%';
+                segment.style.background = colors[currentTask];
+                segment.textContent = String.fromCharCode(65 + currentTask); // A, B, C
+                timeline.appendChild(segment);
+                
+                singleStep++;
+                
+                // 작업 완료 시 다음 작업으로 전환
+                if (progress >= 100) {
+                    document.getElementById(tasks[currentTask]).classList.remove('active');
+                    currentTask++;
+                    progress = 0;
+                    
+                    if (currentTask < tasks.length) {
+                        document.getElementById(tasks[currentTask]).classList.add('active');
+                    }
+                }
+                
+                // 모든 작업 완료
+                if (currentTask >= tasks.length || singleStep >= 30) {
+                    clearInterval(singleInterval);
+                    document.querySelectorAll('.task').forEach(task => {
+                        if (task.id.startsWith('single-')) {
+                            task.style.width = '100%';
+                            task.classList.remove('active');
+                        }
+                    });
+                }
+            }, 400);
+        }
+
+        function startConcurrency() {
+            resetAll();
+            
+            const tasks = ['conc-task-a', 'conc-task-b', 'conc-task-c'];
+            const colors = ['#FF6B6B', '#4ECDC4', '#45B7D1'];
+            const timeline = document.getElementById('concurrency-timeline');
+            
+            let currentTask = 0;
+            let progress = [0, 0, 0]; // 각 작업별 진행률 저장
+            
+            concurrencyInterval = setInterval(() => {
+                // 현재 작업 비활성화
+                document.getElementById(tasks[currentTask]).classList.remove('active');
+                
+                // 진행률 업데이트
+                progress[currentTask] += 15;
+                document.getElementById(tasks[currentTask]).style.width = `${Math.min(progress[currentTask], 100)}%`;
+                
+                // 타임라인 업데이트
+                const segment = document.createElement('div');
+                segment.className = 'timeline-segment';
+                segment.style.left = `${concurrencyStep * 5}%`;
+                segment.style.width = '5%';
+                segment.style.background = colors[currentTask];
+                segment.textContent = String.fromCharCode(65 + currentTask); // A, B, C
+                timeline.appendChild(segment);
+                
+                concurrencyStep++;
+                
+                // 작업 전환 (Context Switching)
+                currentTask = (currentTask + 1) % 3;
+                
+                // 다음 작업 활성화 (완료되지 않은 작업만)
+                if (progress[currentTask] < 100) {
+                    document.getElementById(tasks[currentTask]).classList.add('active');
+                }
+                
+                // 완료 조건
+                if (concurrencyStep >= 20 || progress.every(p => p >= 100)) {
+                    clearInterval(concurrencyInterval);
+                    document.querySelectorAll('.task').forEach(task => {
+                        if (task.id.startsWith('conc-')) {
+                            task.style.width = '100%';
+                            task.classList.remove('active');
+                        }
+                    });
+                }
+            }, 500);
+        }
+
+        function startParallelism() {
+            resetAll();
+            
+            const tasks = ['par-task-a', 'par-task-b', 'par-task-c'];
+            const colors = ['#FF6B6B', '#4ECDC4', '#45B7D1'];
+            const timeline = document.getElementById('parallelism-timeline');
+            
+            // 모든 작업 동시 활성화
+            tasks.forEach(taskId => {
+                document.getElementById(taskId).classList.add('active');
+            });
+            
+            parallelismInterval = setInterval(() => {
+                parallelismStep += 10;
+                
+                // 모든 작업 동시 진행
+                tasks.forEach((taskId, index) => {
+                    document.getElementById(taskId).style.width = `${Math.min(parallelismStep, 100)}%`;
+                });
+                
+                // 타임라인 업데이트 (모든 작업이 동시에)
+                if (parallelismStep <= 100) {
+                    colors.forEach((color, index) => {
+                        const segment = document.createElement('div');
+                        segment.className = 'timeline-segment';
+                        segment.style.left = `${(parallelismStep - 10)}%`;
+                        segment.style.width = '10%';
+                        segment.style.background = color;
+                        segment.style.top = `${index * 33.33}%`;
+                        segment.style.height = '33.33%';
+                        segment.textContent = String.fromCharCode(65 + index);
+                        timeline.appendChild(segment);
+                    });
+                }
+                
+                // 완료 조건
+                if (parallelismStep >= 100) {
+                    clearInterval(parallelismInterval);
+                    tasks.forEach(taskId => {
+                        document.getElementById(taskId).classList.remove('active');
+                    });
+                }
+            }, 300);
+        }
+
+        // 초기 상태 설정
+        resetAll();
+    </script>
+</body>
+</html>

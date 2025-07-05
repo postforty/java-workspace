@@ -1,0 +1,596 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>창고 관리 시뮬레이션</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+        }
+
+        h1 {
+            text-align: center;
+            color: #333;
+            margin-bottom: 30px;
+            font-size: 2.5em;
+        }
+
+        .simulation-area {
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            margin: 40px 0;
+            flex-wrap: wrap;
+            gap: 30px;
+        }
+
+        .worker {
+            text-align: center;
+            padding: 20px;
+            border-radius: 15px;
+            min-width: 200px;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            user-select: none;
+        }
+
+        .worker:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+        }
+
+        .worker:active {
+            transform: translateY(-2px);
+        }
+
+        .worker.add-worker {
+            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+            color: white;
+        }
+
+        .worker.pop-worker {
+            background: linear-gradient(135deg, #fa709a 0%, #fee140 100%);
+            color: white;
+        }
+
+        .worker-icon {
+            font-size: 4em;
+            margin-bottom: 10px;
+            display: block;
+        }
+
+        .worker-name {
+            font-size: 1.2em;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+
+        .worker-status {
+            font-size: 1em;
+            padding: 5px 10px;
+            border-radius: 20px;
+            background: rgba(255,255,255,0.3);
+            margin-top: 10px;
+        }
+
+        .warehouse {
+            text-align: center;
+            padding: 30px;
+            background: linear-gradient(135deg, #ffecd2 0%, #fcb69f 100%);
+            border-radius: 20px;
+            border: 3px solid #ff9a56;
+            min-width: 300px;
+        }
+
+        .warehouse-title {
+            font-size: 1.5em;
+            font-weight: bold;
+            color: #d63031;
+            margin-bottom: 20px;
+        }
+
+        .warehouse-count {
+            font-size: 3em;
+            font-weight: bold;
+            color: #2d3436;
+            margin: 20px 0;
+        }
+
+        .boxes-container {
+            display: grid;
+            grid-template-columns: repeat(10, 1fr);
+            gap: 5px;
+            margin: 20px 0;
+            align-items: center;
+        }
+
+        .box {
+            width: 40px;
+            height: 40px;
+            background: #e17055;
+            border: 2px solid #d63031;
+            border-radius: 5px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            color: white;
+            font-size: 0.8em;
+            animation: boxAppear 0.3s ease;
+        }
+
+        @keyframes boxAppear {
+            from {
+                transform: scale(0);
+                opacity: 0;
+            }
+            to {
+                transform: scale(1);
+                opacity: 1;
+            }
+        }
+
+        .controls {
+            text-align: center;
+            margin: 30px 0;
+        }
+
+        button {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            font-size: 1.1em;
+            border-radius: 25px;
+            cursor: pointer;
+            margin: 0 10px;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+        }
+
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(0,0,0,0.3);
+        }
+
+        button:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .log {
+            background: #2d3436;
+            color: #00b894;
+            padding: 20px;
+            border-radius: 10px;
+            margin-top: 30px;
+            font-family: 'Courier New', monospace;
+            max-height: 200px;
+            overflow-y: auto;
+        }
+
+        .log-entry {
+            margin: 5px 0;
+            padding: 3px 0;
+            animation: fadeIn 0.5s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .sleeping {
+            animation: sleep 2s infinite;
+        }
+
+        @keyframes sleep {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(0.95); opacity: 0.7; }
+        }
+
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-5px); }
+            75% { transform: translateX(5px); }
+        }
+
+        .shake {
+            animation: shake 0.5s ease-in-out;
+        }
+
+        .working {
+            animation: work 1s infinite;
+        }
+
+        @keyframes work {
+            0%, 100% { transform: rotate(0deg); }
+            25% { transform: rotate(-5deg); }
+            75% { transform: rotate(5deg); }
+        }
+
+        .explanation {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 10px;
+            margin-top: 20px;
+            border-left: 5px solid #667eea;
+        }
+
+        .explanation h3 {
+            color: #667eea;
+            margin-bottom: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🏭 창고 관리 시뮬레이션</h1>
+        
+        <div class="simulation-area">
+            <div class="worker add-worker" id="addWorker">
+                <span class="worker-icon">👷‍♂️</span>
+                <div class="worker-name">짐 추가 작업자</div>
+                <div class="worker-status" id="addStatus">대기 중...</div>
+                <div style="font-size: 0.9em; margin-top: 5px; opacity: 0.8;">🖱️ 클릭하여 수동 작업</div>
+            </div>
+            
+            <div class="warehouse">
+                <div class="warehouse-title">🏬 창고</div>
+                <div class="warehouse-count" id="boxCount">10</div>
+                <div class="boxes-container" id="boxesContainer"></div>
+            </div>
+            
+            <div class="worker pop-worker" id="popWorker">
+                <span class="worker-icon">🚛</span>
+                <div class="worker-name">짐 운반 작업자</div>
+                <div class="worker-status" id="popStatus">대기 중...</div>
+                <div style="font-size: 0.9em; margin-top: 5px; opacity: 0.8;">🖱️ 클릭하여 수동 작업</div>
+            </div>
+        </div>
+        
+        <div class="controls">
+            <button id="startBtn">시뮬레이션 시작</button>
+            <button id="pauseBtn" disabled>일시정지</button>
+            <button id="resetBtn">리셋</button>
+        </div>
+        
+        <div class="log" id="log"></div>
+        
+        <div class="explanation">
+            <h3>🤔 어떻게 동작하나요?</h3>
+            <p><strong>짐 운반 작업자</strong>는 2.5초마다 창고에서 짐 5개를 가져갑니다.</p>
+            <p><strong>짐 추가 작업자</strong>는 3초마다 창고를 확인하고, 창고가 비어있을 때만 짐 10개를 추가합니다.</p>
+            <p>창고가 비어있으면 짐 운반 작업자는 잠깐 기다리고, 짐이 추가되면 다시 일을 시작합니다!</p>
+            <p><strong>🖱️ 클릭 기능:</strong> 각 작업자를 클릭하면 수동으로 작업을 시킬 수 있어요!</p>
+            <p>• 창고가 가득 찬 경우(20개) 또는 비어있는 경우 작업할 수 없다는 알림이 나타납니다.</p>
+        </div>있을 때만 짐 10개를 추가합니다.</p>
+            <p>창고가 비어있으면 짐 운반 작업자는 잠깐 기다리고, 짐이 추가되면 다시 일을 시작합니다!</p>
+        </div>
+    </div>
+
+    <script>
+        class WarehouseSimulation {
+            constructor() {
+                this.stackCount = 10;
+                this.isRunning = false;
+                this.addWorkerSleeping = false;
+                this.popWorkerSleeping = false;
+                this.intervals = [];
+                this.isAddWorkerBusy = false;
+                this.isPopWorkerBusy = false;
+                
+                this.initializeElements();
+                this.updateDisplay();
+                this.bindEvents();
+            }
+            
+            initializeElements() {
+                this.boxCountEl = document.getElementById('boxCount');
+                this.boxesContainerEl = document.getElementById('boxesContainer');
+                this.addStatusEl = document.getElementById('addStatus');
+                this.popStatusEl = document.getElementById('popStatus');
+                this.addWorkerEl = document.getElementById('addWorker');
+                this.popWorkerEl = document.getElementById('popWorker');
+                this.logEl = document.getElementById('log');
+                this.startBtn = document.getElementById('startBtn');
+                this.pauseBtn = document.getElementById('pauseBtn');
+                this.resetBtn = document.getElementById('resetBtn');
+            }
+            
+            bindEvents() {
+                this.startBtn.addEventListener('click', () => this.start());
+                this.pauseBtn.addEventListener('click', () => this.pause());
+                this.resetBtn.addEventListener('click', () => this.reset());
+                
+                // 작업자 클릭 이벤트 추가
+                this.addWorkerEl.addEventListener('click', () => this.manualAddWork());
+                this.popWorkerEl.addEventListener('click', () => this.manualPopWork());
+            }
+            
+            updateDisplay() {
+                this.boxCountEl.textContent = this.stackCount;
+                this.boxesContainerEl.innerHTML = '';
+                
+                for (let i = 0; i < this.stackCount; i++) {
+                    const box = document.createElement('div');
+                    box.className = 'box';
+                    box.textContent = '📦';
+                    this.boxesContainerEl.appendChild(box);
+                }
+            }
+            
+            addLog(message) {
+                const logEntry = document.createElement('div');
+                logEntry.className = 'log-entry';
+                logEntry.textContent = `[${new Date().toLocaleTimeString()}] ${message}`;
+                this.logEl.appendChild(logEntry);
+                this.logEl.scrollTop = this.logEl.scrollHeight;
+            }
+            
+            addStack(count) {
+                this.stackCount += count;
+                this.updateDisplay();
+                
+                if (this.stackCount >= 10) {
+                    this.addLog("🔔 스레드 깨우기 - 짐이 충분해졌습니다!");
+                    this.wakeUpPopWorker();
+                }
+            }
+            
+            popStack(count) {
+                if (count > this.stackCount) {
+                    this.stackCount = 0;
+                } else {
+                    this.stackCount -= count;
+                }
+                
+                this.updateDisplay();
+                
+                if (this.stackCount === 0) {
+                    this.addLog("😴 짐 없음 - 운반 작업자가 대기합니다");
+                    this.popWorkerSleeping = true;
+                    this.popStatusEl.textContent = "😴 짐 없어서 대기 중...";
+                    this.popWorkerEl.classList.add('sleeping');
+                    this.popWorkerEl.classList.remove('working');
+                }
+            }
+            
+            wakeUpPopWorker() {
+                if (this.popWorkerSleeping) {
+                    this.popWorkerSleeping = false;
+                    this.popStatusEl.textContent = "😊 다시 일하기 시작!";
+                    this.popWorkerEl.classList.remove('sleeping');
+                    this.popWorkerEl.classList.add('working');
+                    this.addLog("🎉 짐 없음 완료 - 운반 작업자가 다시 일합니다!");
+                }
+            }
+            
+            manualAddWork() {
+                // 이미 작업 중이면 무시
+                if (this.isAddWorkerBusy) {
+                    this.showAlert("⚠️ 짐 추가 작업자가 이미 작업 중입니다!");
+                    this.addWorkerEl.classList.add('shake');
+                    setTimeout(() => this.addWorkerEl.classList.remove('shake'), 500);
+                    return;
+                }
+                
+                // 창고가 가득 찬 경우 (최대 20개로 제한)
+                if (this.stackCount >= 20) {
+                    this.showAlert("📦 창고가 가득 찼습니다! (최대 20개)\n짐을 더 추가할 수 없어요.");
+                    this.addWorkerEl.classList.add('shake');
+                    setTimeout(() => this.addWorkerEl.classList.remove('shake'), 500);
+                    return;
+                }
+                
+                this.isAddWorkerBusy = true;
+                this.addLog("🖱️ [수동] 짐 10개 추가 시작");
+                this.addStatusEl.textContent = "📦 [수동] 짐 10개 추가 중...";
+                this.addWorkerEl.classList.add('working');
+                
+                setTimeout(() => {
+                    this.addStack(10);
+                    this.addStatusEl.textContent = "✅ [수동] 짐 추가 완료!";
+                    this.addWorkerEl.classList.remove('working');
+                    this.isAddWorkerBusy = false;
+                    
+                    setTimeout(() => {
+                        if (this.isRunning) {
+                            this.addStatusEl.textContent = "👀 창고 상태 확인 중...";
+                        } else {
+                            this.addStatusEl.textContent = "대기 중...";
+                        }
+                    }, 1000);
+                }, 1500);
+            }
+            
+            manualPopWork() {
+                // 이미 작업 중이면 무시
+                if (this.isPopWorkerBusy) {
+                    this.showAlert("⚠️ 짐 운반 작업자가 이미 작업 중입니다!");
+                    this.popWorkerEl.classList.add('shake');
+                    setTimeout(() => this.popWorkerEl.classList.remove('shake'), 500);
+                    return;
+                }
+                
+                // 창고가 비어있는 경우
+                if (this.stackCount === 0) {
+                    this.showAlert("📭 창고가 비어있습니다!\n운반할 짐이 없어요.");
+                    this.popWorkerEl.classList.add('shake');
+                    setTimeout(() => this.popWorkerEl.classList.remove('shake'), 500);
+                    return;
+                }
+                
+                this.isPopWorkerBusy = true;
+                this.addLog("🖱️ [수동] 짐 5개 나르기 시작");
+                this.popStatusEl.textContent = "🚛 [수동] 짐 5개 운반 중...";
+                this.popWorkerEl.classList.add('working');
+                
+                setTimeout(() => {
+                    this.popStack(5);
+                    if (!this.popWorkerSleeping) {
+                        this.popStatusEl.textContent = "✅ [수동] 운반 완료!";
+                        this.popWorkerEl.classList.remove('working');
+                        
+                        setTimeout(() => {
+                            if (!this.popWorkerSleeping) {
+                                if (this.isRunning) {
+                                    this.popStatusEl.textContent = "🔄 다음 운반 준비 중...";
+                                } else {
+                                    this.popStatusEl.textContent = "대기 중...";
+                                }
+                            }
+                        }, 1000);
+                    }
+                    this.isPopWorkerBusy = false;
+                }, 1500);
+            }
+            
+            performAddWork() {
+                if (this.isAddWorkerBusy) return;
+                
+                this.isAddWorkerBusy = true;
+                this.addLog("➕ 짐 10개 추가 시작");
+                this.addStatusEl.textContent = "📦 짐 10개 추가 중...";
+                this.addWorkerEl.classList.add('working');
+                
+                setTimeout(() => {
+                    this.addStack(10);
+                    this.addStatusEl.textContent = "✅ 짐 추가 완료!";
+                    this.addWorkerEl.classList.remove('working');
+                    this.isAddWorkerBusy = false;
+                    
+                    setTimeout(() => {
+                        if (this.isRunning) {
+                            this.addStatusEl.textContent = "👀 창고 상태 확인 중...";
+                        } else {
+                            this.addStatusEl.textContent = "대기 중...";
+                        }
+                    }, 1000);
+                }, 1500);
+            }
+            
+            performPopWork() {
+                if (this.isPopWorkerBusy) return;
+                
+                this.isPopWorkerBusy = true;
+                this.addLog("🚛 짐 5개 나르기 시작");
+                this.popStatusEl.textContent = "🚛 짐 5개 운반 중...";
+                this.popWorkerEl.classList.add('working');
+                
+                setTimeout(() => {
+                    this.popStack(5);
+                    if (!this.popWorkerSleeping) {
+                        this.popStatusEl.textContent = "✅ 운반 완료!";
+                        this.popWorkerEl.classList.remove('working');
+                        
+                        setTimeout(() => {
+                            if (!this.popWorkerSleeping) {
+                                if (this.isRunning) {
+                                    this.popStatusEl.textContent = "🔄 다음 운반 준비 중...";
+                                } else {
+                                    this.popStatusEl.textContent = "대기 중...";
+                                }
+                            }
+                        }, 1000);
+                    }
+                    this.isPopWorkerBusy = false;
+                }, 1500);
+            }
+            
+            showAlert(message) {
+                alert(message);
+            }
+            
+            start() {
+                this.isRunning = true;
+                this.startBtn.disabled = true;
+                this.pauseBtn.disabled = false;
+                
+                // 짐 추가 작업자 (3초마다 체크)
+                const addInterval = setInterval(() => {
+                    if (!this.isRunning || this.isAddWorkerBusy) return;
+                    
+                    if (this.stackCount === 0) {
+                        this.performAddWork();
+                    } else {
+                        this.addStatusEl.textContent = "👀 창고 상태 확인 중...";
+                        this.addWorkerEl.classList.remove('working');
+                    }
+                }, 3000);
+                
+                // 짐 운반 작업자 (2.5초마다 실행)
+                const popInterval = setInterval(() => {
+                    if (!this.isRunning || this.isPopWorkerBusy) return;
+                    
+                    if (!this.popWorkerSleeping) {
+                        this.performPopWork();
+                    }
+                }, 2500);
+                
+                this.intervals = [addInterval, popInterval];
+                this.addLog("🚀 시뮬레이션 시작!");
+            }
+            
+            pause() {
+                this.isRunning = false;
+                this.startBtn.disabled = false;
+                this.pauseBtn.disabled = true;
+                
+                this.intervals.forEach(interval => clearInterval(interval));
+                this.intervals = [];
+                
+                this.addLog("⏸️ 시뮬레이션 일시정지");
+            }
+            
+            reset() {
+                this.isRunning = false;
+                this.stackCount = 10;
+                this.popWorkerSleeping = false;
+                this.addWorkerSleeping = false;
+                this.isAddWorkerBusy = false;
+                this.isPopWorkerBusy = false;
+                
+                this.intervals.forEach(interval => clearInterval(interval));
+                this.intervals = [];
+                
+                this.startBtn.disabled = false;
+                this.pauseBtn.disabled = true;
+                
+                this.addStatusEl.textContent = "대기 중...";
+                this.popStatusEl.textContent = "대기 중...";
+                
+                this.addWorkerEl.classList.remove('working', 'sleeping');
+                this.popWorkerEl.classList.remove('working', 'sleeping');
+                
+                this.updateDisplay();
+                this.logEl.innerHTML = '';
+                this.addLog("🔄 시뮬레이션 리셋 완료");
+            }
+        }
+        
+        // 시뮬레이션 시작
+        new WarehouseSimulation();
+    </script>
+</body>
+</html>
