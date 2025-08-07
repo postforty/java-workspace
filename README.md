@@ -33,3 +33,18 @@
 |18|자바 입출력(I/O)|<a href="https://treasure-snow-23c.notion.site/18-I-O-6fc6dd52e1c040498ee2f0fc291c30ac?pvs=4" target="_blank">바로가기</a>|
 |19|미니 프로젝트1|<a href="https://treasure-snow-23c.notion.site/19-1-03d3c9fb2b1f4199ad73436e29ff909e?pvs=4" target="_blank">바로가기</a>|
 |20|미니 프로젝트2(JDBC 연동)|<a href="https://treasure-snow-23c.notion.site/20-2-JDBC-4b1a2f94f3204827a76c846879713ad2?pvs=4" target="_blank">바로가기</a>|
+
+
+# 마크다운에서 동영상 재생 예시
+
+## 1. 외부 링크 사용
+
+[마크다운 소개 영상](https://www.youtube.com/watch?v=dQw4w9WgXcQ)
+
+## 2. HTML 태그 사용 (지원하는 경우)
+
+<iframe width="560" height="315" src="https://www.youtube.com/embed/dQw4w9WgXcQ" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+
+## 3. 이미지와 링크 결합
+
+[![Rick Astley - Never Gonna Give You Up](https://img.youtube.com/vi/dQw4w9WgXcQ/0.jpg)](https://www.youtube.com/watch?v=dQw4w9WgXcQ)
